@@ -1,0 +1,48 @@
+#!/usr/bin/env python
+
+import click
+import subprocess
+
+# From when you
+# docker build -t container_name .
+# the container name...
+# if you are pulling it from dockerhub
+# the container_name is probably
+# gbdx-madness
+container_name = 'test'
+
+
+@click.command()
+@click.argument('t0', type=click.Path(exists=True))
+@click.argument('t1', type=click.Path(exists=True))
+@click.argument('outdir')
+def main(t0, t1, outdir, container_name='test'):
+    """
+    Call the docker container and pass the appropriate arguments,
+    create a mount from ~/ to ~/ and run the script as the appropriate user.
+
+    :param t0: The time 0 image path.
+    :param t1: The time 1 image path.
+    :param outdir: The path to output directory. Shouldn't exist.
+
+    """
+    if all([t0, t1, outdir]):
+        cmd = ['docker',
+               'run',
+               '-u $(id -u):$(id -g)',
+               '-v ${HOME}:/home/${USER}',
+               '-it --rm',
+               container_name,
+               'nongbdx',
+               '--t0', t0,
+               '--t1', t1,
+               '--outdir', outdir]
+        cmd = ' '.join(cmd)
+        ret = subprocess.call(cmd, shell=True)
+        print ret
+    else:
+        raise ValueError
+
+if __name__ == '__main__':
+    main()
+

@@ -1,0 +1,39 @@
+{
+  "containerDescriptors": [
+    {
+      "type": "DOCKER",
+      "properties": {
+        "image": "johntut/gbdx-madness:latest"
+      }
+    }
+  ],
+  "description": "A task for running IR-MAD change detection on input rasters. Clips rasters to the intersection.",
+  "inputPortDescriptors": [
+    {
+      "required": true,
+      "type": "directory",
+      "description": "Path to the first image in S3",
+      "name": "image1"
+    },
+    {
+      "required": true,
+      "type": "directory",
+      "description": "Path to the second image in S3",
+      "name": "image2"
+    }
+  ],
+  "outputPortDescriptors": [
+    {
+      "required": true,
+      "type": "directory",
+      "description": "Output data directory",
+      "name": "data"
+    }
+  ],
+  "properties": {
+    "isPublic": false,
+    "timeout": 17200
+  },
+  "name": "tuthill-madness-testing",
+  "version": "0.0.1"
+}
