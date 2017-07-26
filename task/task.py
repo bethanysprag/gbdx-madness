@@ -137,8 +137,7 @@ def main(img1_path, img2_path, out_dir,
 
     fh.setFormatter(format)
     log.addHandler(fh)
-    #For DEBUG ONLY!!! Remove after debugging
-    logging.info("Can you see this? #1)
+
     logging.info("Locating input rasters.")
     # get our tifs
     ims = []
@@ -174,7 +173,7 @@ def main(img1_path, img2_path, out_dir,
     # because it's better than our codes for large files.
     # the result is a vrt.
     bases = [os.path.basename(im) for im in ims]
-    vrt_names = [os.path.splitext(b)[0] + '.TIF' for b in bases]
+    vrt_names = [os.path.splitext(b)[0] + '.vrt' for b in bases]
 
     # should check epsg here and add it in.
     epsg = '-t_srs EPSG:%s' % str(r2.epsg)
@@ -193,7 +192,6 @@ def main(img1_path, img2_path, out_dir,
     logging.info("Clipping complete.")
 
     #For DEBUG ONLY!!! Remove after debugging
-    logging.info("Can you see this? #2)
     contents = os.listdir(out_dir)
     logging.info("Contents of out_dir: %s" % contents)
     # we want to load the vrt and chop out tiles from it for each raster

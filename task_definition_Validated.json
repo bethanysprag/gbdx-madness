@@ -1,13 +1,11 @@
 {
-  "containerDescriptors": [
-    {
-      "type": "DOCKER",
-      "properties": {
-        "image": "johntut/gbdx-madness:latest"
-      }
-    }
-  ],
+  "name": "exo-madness-testing",
+  "version": "0.0.1",
   "description": "A task for running IR-MAD change detection on input rasters. Clips rasters to the intersection.",
+  "properties": {
+    "isPublic": false,
+    "timeout": 17200
+  },
   "inputPortDescriptors": [
     {
       "required": true,
@@ -30,9 +28,12 @@
       "name": "data"
     }
   ],
-  "properties": {
-    "isPublic": false,
-    "timeout": 7200
-  },
-  "name": "tuthill-madness-testing"
+  "containerDescriptors": [
+    {
+      "type": "DOCKER",
+      "properties": {
+        "image": "barnabassprague/gbdx-madness:latest"
+      }
+    }
+  ]
 }

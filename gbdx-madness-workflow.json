@@ -1,0 +1,40 @@
+{
+   "name": "exo-madness-test",
+   "tasks": [
+      {
+         "name": "exo-madness-test-script",
+         "outputs": [
+            {
+               "name":"data"
+            }
+            ],
+         "inputs": [
+            {
+                "name":"image1",
+                "value":" s3://gbd-customer-data/654e4f06-d9aa-4383-820e-5b207ac78d5d/Before.tif"
+            },
+            {
+                "name":"image2",
+                "value":" s3://gbd-customer-data/654e4f06-d9aa-4383-820e-5b207ac78d5d/After.tif"
+            }
+            ],
+          "taskType": "exo-madness-test",
+          "impersonation_allowed": true
+      },
+      {
+            "name": "StagetoS3_Data",
+            "inputs": [
+                {
+                    "name": "directory",
+                    "source": "exo-madness-test-script:data"
+                },
+                {
+                    "name": "destination",
+                    "value": "s3://gbd-customer-data/654e4f06-d9aa-4383-820e-5b207ac78d5d"
+                }
+            ],
+            "taskType": "StageDataToS3",
+            "impersonation_allowed": true
+        }
+   ]
+}

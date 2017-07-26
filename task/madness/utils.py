@@ -221,6 +221,6 @@ def wrap_subprocess(cmd):
 
 def gwarp(nps, epsg, extent, infile, outfile):
     ulx, uly, llx, lly = extent
-    cmd = ("gdalwarp --config GDAL_CACHEMAX 4096 -wm 4096 -multi -of TIF -tap %s -tr %f %f -te %f %f %f %f %s %s" %
+    cmd = ("gdalwarp -multi -of VRT -tap %s -tr %f %f -te %f %f %f %f %s %s" %
            (epsg, nps, nps, ulx, uly, llx, lly, infile, outfile))
     return wrap_subprocess(cmd)

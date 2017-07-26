@@ -1,0 +1,9 @@
+task/.idea/
+task/UNKNOWN.egg-info/
+build/
+work/
+task/test_data
+*.pyc
+*.so
+*.d
+*.o
