@@ -137,7 +137,8 @@ def main(img1_path, img2_path, out_dir,
 
     fh.setFormatter(format)
     log.addHandler(fh)
-
+    #For DEBUG ONLY!!! Remove after debugging
+    logging.info("Can you see this? #1)
     logging.info("Locating input rasters.")
     # get our tifs
     ims = []
@@ -192,6 +193,7 @@ def main(img1_path, img2_path, out_dir,
     logging.info("Clipping complete.")
 
     #For DEBUG ONLY!!! Remove after debugging
+    logging.info("Can you see this? #2)
     contents = os.listdir(out_dir)
     logging.info("Contents of out_dir: %s" % contents)
     # we want to load the vrt and chop out tiles from it for each raster
