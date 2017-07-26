@@ -191,6 +191,9 @@ def main(img1_path, img2_path, out_dir,
     del r1, r2
     logging.info("Clipping complete.")
 
+    #For DEBUG ONLY!!! Remove after debugging
+    contents = os.listdir(out_dir)
+    logging.info("Contents of out_dir: %s" % contents)
     # we want to load the vrt and chop out tiles from it for each raster
     # tile sizes are at most 5000 x 5000
     # 16 bit... 2 * 5000 * 5000 * 8 bands
