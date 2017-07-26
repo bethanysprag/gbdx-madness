@@ -180,8 +180,12 @@ def main(img1_path, img2_path, out_dir,
 
     # from this we have new vrts
     # we are saving out into our new directory here
-    gwarp(nps, epsg, extent, ims[0], vrt_names[0])
-    gwarp(nps, epsg, extent, ims[1], vrt_names[1])
+    check1 = gwarp(nps, epsg, extent, ims[0], vrt_names[0])
+    check2 = gwarp(nps, epsg, extent, ims[1], vrt_names[1])
+    if (int(check1) + int(check2) != 0):
+        logging.info("Error clipping images to same extent.")
+        logging.info("Early exit.")
+        return None
 
     # clean up
     del r1, r2
