@@ -1,0 +1,142 @@
+{
+   "name": "MegaMadness",
+   "tasks": [
+      {
+         "name": "OrderStuff_1",
+         "outputs": [
+            {
+               "name":"s3_location"
+            }
+            ],
+         "inputs": [
+            {
+                "name":"cat_id",
+                "value":"10100100104A0800"
+            }
+            ],
+          "taskType": "Auto_Ordering",
+          "impersonation_allowed": true
+      },
+      {
+         "name": "OrderStuff_2",
+         "outputs": [
+            {
+               "name":"s3_location"
+            }
+            ],
+         "inputs": [
+            {
+                "name":"cat_id",
+                "value":"10400100048FA500"
+            }
+            ],
+          "taskType": "Auto_Ordering",
+          "impersonation_allowed": true
+      },
+      {
+         "name": "Preprocessing_1",
+         "outputs": [
+            {
+               "name":"data"
+            },
+            {
+               "name":"log"
+            }
+            ],
+         "inputs": [
+            {
+                "name":"data",
+                "source":"OrderStuff_1:s3_location"
+            },
+            {
+                "name":"enable_acomp",
+                "value":"true"
+            },
+            {
+                "name":"enable_dra",
+                "value":"false"
+            },
+            {
+                "name":"enable_pansharpen",
+                "value":"false"
+            },
+            {
+                "name":"bands",
+                "value":"MS"
+            }
+            ],
+          "taskType": "AOP_Strip_Processor",
+          "impersonation_allowed": true
+      },
+      {
+         "name": "Preprocessing_2",
+         "outputs": [
+            {
+               "name":"data"
+            },
+            {
+               "name":"log"
+            }
+            ],
+         "inputs": [
+            {
+                "name":"data",
+                "source":"OrderStuff_2:s3_location"
+            },
+            {
+                "name":"enable_acomp",
+                "value":"true"
+            },
+            {
+                "name":"enable_dra",
+                "value":"false"
+            },
+            {
+                "name":"enable_pansharpen",
+                "value":"false"
+            },
+            {
+                "name":"bands",
+                "value":"MS"
+            }
+            ],
+          "taskType": "AOP_Strip_Processor",
+          "impersonation_allowed": true
+      },
+      {
+         "name": "exo-madness-processing",
+         "outputs": [
+            {
+               "name":"data"
+            }
+            ],
+         "inputs": [
+            {
+                "name":"image1",
+                "source":"Preprocessing_1:data"
+            },
+            {
+                "name":"image2",
+                "source":"Preprocessing_2:data"
+            }
+            ],
+          "taskType": "exo-madness-test",
+          "impersonation_allowed": true
+      },
+      {
+            "name": "StagetoS3_Data",
+            "inputs": [
+                {
+                    "name": "data",
+                    "source": "exo-madness-processing:data"
+                },
+                {
+                    "name": "destination",
+                    "value": "s3://gbd-customer-data/654e4f06-d9aa-4383-820e-5b207ac78d5d/Mandala_10100100104A0800_10400100048FA500"
+                }
+            ],
+            "taskType": "StageDataToS3",
+            "impersonation_allowed": true
+        }
+   ]
+}
