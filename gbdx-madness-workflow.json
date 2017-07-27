@@ -5,17 +5,17 @@
          "name": "exo-madness-test-script",
          "outputs": [
             {
-               "name":"data"
+               "name": "data"
             }
             ],
          "inputs": [
             {
-                "name":"image1",
-                "value":" s3://gbd-customer-data/654e4f06-d9aa-4383-820e-5b207ac78d5d/Before.tif"
+                "name": "image1",
+                "value": "s3://gbd-customer-data/654e4f06-d9aa-4383-820e-5b207ac78d5d/Before.tif"
             },
             {
                 "name":"image2",
-                "value":" s3://gbd-customer-data/654e4f06-d9aa-4383-820e-5b207ac78d5d/After.tif"
+                "value": "s3://gbd-customer-data/654e4f06-d9aa-4383-820e-5b207ac78d5d/After.tif"
             }
             ],
           "taskType": "exo-madness-test",
