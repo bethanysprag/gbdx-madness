@@ -38,14 +38,10 @@ def get_inputs(imgpath):
 def cli(ctx):
     """
     There are two cases:
-
     gbdx
-
     Where the files will be located in places defined by the
     task specification file.
-
     nongbdx
-
     Where you pass command line options to define the inputs and
     output directory.
     """
@@ -90,6 +86,9 @@ def cli(ctx):
 @click.option('--numcpus',
               default=1,
               help='Number of cpus to use. Only works if numtiles > 1')
+@click.option('--debug',
+              default=None,
+              help='Leaves temp files in place for debugging')
 def nongbdx(t0, t1, outdir, xtiles, ytiles, numcpus):
     """
     To aid in running this as a command line docker application,
@@ -108,7 +107,7 @@ def nongbdx(t0, t1, outdir, xtiles, ytiles, numcpus):
 
 
 def main(img1_path, img2_path, out_dir,
-         input_data, xtiles, ytiles, numcpus):
+         input_data, xtiles, ytiles, numcpus, debug=None):
 
     # make and change to output directory
     try:
@@ -240,7 +239,7 @@ def main(img1_path, img2_path, out_dir,
 
     logging.info("Tiling comlete.")
 
-    logging.info("Finding MAD variates.")
+    logging.info("Finding MAD variates.")3f5d8dfb927822911ba6e889c7eb70a0840c6f07
     im_pairs = zip(im1_tiles, im2_tiles)
 
     mad_tiles = pmap(madly, im_pairs)
@@ -281,6 +280,32 @@ def main(img1_path, img2_path, out_dir,
     # # close all these things
     if numcpus != 1:
         pool.close()
+    
+
+    #DELETEME
+    #If not debug, delete  intermediate files (vrts, MAD)
+        #if we're in the outdir, I can just search for vrts and Mad and remove them, right?
+    if debug is not None:
+        fileList = []
+        deleteList = []
+        for files in os.listdir(outdir):
+            fileList.append(files)
+            if files.endswith(vrt):
+                deleteList.append(files)
+            if files[:3] = 'MAD':
+                deleteList.append(files)
+        f = open('filesInFolder.txt', 'r')
+        for files in fileList:
+            f.write('%s\n' % files)
+        f.close()
+        f = open('deletedFiles.txt', 'r')
+        for files in deleteList:
+            f.write('%s\n' % files)
+        f.close()
+        for files in deleteList:
+            os.remove(files)
+    
+    
 
     # write the status
     if input_data is not None:
