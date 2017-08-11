@@ -285,7 +285,7 @@ def main(img1_path, img2_path, out_dir,
     #DELETEME
     #If not debug, delete  intermediate files (vrts, MAD)
         #if we're in the outdir, I can just search for vrts and Mad and remove them, right?
-    if debug is not None:
+    if debug is None:
         fileList = []
         deleteList = []
         for files in os.listdir(outdir):
