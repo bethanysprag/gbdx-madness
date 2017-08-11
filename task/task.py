@@ -292,7 +292,7 @@ def main(img1_path, img2_path, out_dir,
             fileList.append(files)
             if files.endswith(vrt):
                 deleteList.append(files)
-            if files[:3] = 'MAD':
+            if files[:3] == 'MAD':
                 deleteList.append(files)
         f = open('filesInFolder.txt', 'r')
         for files in fileList:
