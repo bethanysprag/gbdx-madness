@@ -294,11 +294,11 @@ def main(img1_path, img2_path, out_dir,
                 deleteList.append(files)
             if files[:3] == 'MAD':
                 deleteList.append(files)
-        f = open('filesInFolder.txt', 'r')
+        f = open('filesInFolder.txt', 'w+')
         for files in fileList:
             f.write('%s\n' % files)
         f.close()
-        f = open('deletedFiles.txt', 'r')
+        f = open('deletedFiles.txt', 'w+')
         for files in deleteList:
             f.write('%s\n' % files)
         f.close()
