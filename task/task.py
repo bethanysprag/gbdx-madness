@@ -288,7 +288,7 @@ def main(img1_path, img2_path, out_dir,
     if debug is None:
         fileList = []
         deleteList = []
-        for files in os.listdir(outdir):
+        for files in os.listdir(out_dir):
             fileList.append(files)
             if files.endswith(vrt):
                 deleteList.append(files)
