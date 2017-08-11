@@ -239,7 +239,7 @@ def main(img1_path, img2_path, out_dir,
 
     logging.info("Tiling comlete.")
 
-    logging.info("Finding MAD variates.")3f5d8dfb927822911ba6e889c7eb70a0840c6f07
+    logging.info("Finding MAD variates.")
     im_pairs = zip(im1_tiles, im2_tiles)
 
     mad_tiles = pmap(madly, im_pairs)
