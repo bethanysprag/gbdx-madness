@@ -290,7 +290,7 @@ def main(img1_path, img2_path, out_dir,
         deleteList = []
         for files in os.listdir(out_dir):
             fileList.append(files)
-            if files.endswith(vrt):
+            if files.endswith('vrt'):
                 deleteList.append(files)
             if files[:3] == 'MAD':
                 deleteList.append(files)
