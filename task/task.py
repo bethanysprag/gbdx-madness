@@ -53,13 +53,18 @@ def cli(ctx):
         ports_json = '/mnt/work/input/ports.json'
 
         numcpus = multiprocessing.cpu_count()
+        try:
+            debug = str('/mnt/work/input/debug')
+        except:
+            debug = None
         main(get_inputs('/mnt/work/input/image1'),
              get_inputs('/mnt/work/input/image2'),
              '/mnt/work/output/data',
              json.load(open(ports_json)),
              xtiles=4,
              ytiles=4,
-             numcpus=numcpus)
+             numcpus=numcpus,
+             debug=debug)
 
     else:
         ctx.invoked_subcommand
