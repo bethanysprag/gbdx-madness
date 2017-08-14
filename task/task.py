@@ -311,6 +311,10 @@ def main(img1_path, img2_path, out_dir,
         f.close()
         for files in deleteList:
             os.remove(files)
+    if debug is not None:
+        f = open('DebugValue.txt', 'w+')
+        f.write(str(debug))
+        f.close()
     
     
 
