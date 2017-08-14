@@ -55,6 +55,8 @@ def cli(ctx):
         numcpus = multiprocessing.cpu_count()
         try:
             debug = str('/mnt/work/input/debug')
+            if debug = '':
+                debug = None
         except:
             debug = None
         main(get_inputs('/mnt/work/input/image1'),
