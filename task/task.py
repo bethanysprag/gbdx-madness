@@ -321,7 +321,7 @@ def main(img1_path, img2_path, out_dir,
     # write the status
     if input_data is not None:
         status = {'status': 'success', 'reason': 'task completed'}
-        with open('inputData.json, 'w') as outfile:
+        with open('inputData.json', 'w') as outfile:
             json.dump(input_data, outfile)
         with open('/mnt/work/status.json', 'w') as outfile:
             json.dump(status, outfile)
