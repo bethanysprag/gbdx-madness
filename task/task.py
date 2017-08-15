@@ -54,7 +54,8 @@ def cli(ctx):
 
         numcpus = multiprocessing.cpu_count()
         try:
-            debug = str('/mnt/work/input/debug')
+            input_data = json.load(open(ports_json))
+            debug = str(input_data['debug'])
             if debug == '':
                 debug = None
         except:
