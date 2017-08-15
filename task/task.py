@@ -38,14 +38,10 @@ def get_inputs(imgpath):
 def cli(ctx):
     """
     There are two cases:
-
     gbdx
-
     Where the files will be located in places defined by the
     task specification file.
-
     nongbdx
-
     Where you pass command line options to define the inputs and
     output directory.
     """
@@ -57,13 +53,21 @@ def cli(ctx):
         ports_json = '/mnt/work/input/ports.json'
 
         numcpus = multiprocessing.cpu_count()
+        try:
+            input_data = json.load(open(ports_json))
+            debug = str(input_data['debug'])
+            if debug == '':
+                debug = None
+        except:
+            debug = None
         main(get_inputs('/mnt/work/input/image1'),
              get_inputs('/mnt/work/input/image2'),
              '/mnt/work/output/data',
              json.load(open(ports_json)),
              xtiles=4,
              ytiles=4,
-             numcpus=numcpus)
+             numcpus=numcpus,
+             debug=debug)
 
     else:
         ctx.invoked_subcommand
@@ -90,6 +94,9 @@ def cli(ctx):
 @click.option('--numcpus',
               default=1,
               help='Number of cpus to use. Only works if numtiles > 1')
+@click.option('--debug',
+              default=None,
+              help='Leaves temp files in place for debugging')
 def nongbdx(t0, t1, outdir, xtiles, ytiles, numcpus):
     """
     To aid in running this as a command line docker application,
@@ -108,7 +115,7 @@ def nongbdx(t0, t1, outdir, xtiles, ytiles, numcpus):
 
 
 def main(img1_path, img2_path, out_dir,
-         input_data, xtiles, ytiles, numcpus):
+         input_data, xtiles, ytiles, numcpus, debug=None):
 
     # make and change to output directory
     try:
@@ -191,10 +198,7 @@ def main(img1_path, img2_path, out_dir,
     del r1, r2
     logging.info("Clipping complete.")
 
-    #For DEBUG ONLY!!! Remove after debugging
-    contents = os.listdir(out_dir)
-    logging.info("Contents of out_dir: %s" % contents)
-    # we want to load the vrt and chop out tiles from it for each raster
+        # we want to load the vrt and chop out tiles from it for each raster
     # tile sizes are at most 5000 x 5000
     # 16 bit... 2 * 5000 * 5000 * 8 bands
     # seems reasonable
@@ -281,7 +285,24 @@ def main(img1_path, img2_path, out_dir,
     # # close all these things
     if numcpus != 1:
         pool.close()
+    
 
+    #DELETEME
+    #If not debug, delete  intermediate files (vrts, MAD)
+        #if we're in the outdir, I can just search for vrts and Mad and remove them, right?
+    if debug is None:
+        fileList = []
+        deleteList = []
+        for files in os.listdir(out_dir):
+            fileList.append(files)
+            if files.endswith('vrt'):
+                deleteList.append(files)
+            if files[:3] == 'MAD':
+                deleteList.append(files)
+        for files in deleteList:
+            os.remove(files)
+    
+    
     # write the status
     if input_data is not None:
         status = {'status': 'success', 'reason': 'task completed'}
