@@ -198,10 +198,7 @@ def main(img1_path, img2_path, out_dir,
     del r1, r2
     logging.info("Clipping complete.")
 
-    #For DEBUG ONLY!!! Remove after debugging
-    contents = os.listdir(out_dir)
-    logging.info("Contents of out_dir: %s" % contents)
-    # we want to load the vrt and chop out tiles from it for each raster
+        # we want to load the vrt and chop out tiles from it for each raster
     # tile sizes are at most 5000 x 5000
     # 16 bit... 2 * 5000 * 5000 * 8 bands
     # seems reasonable
@@ -302,28 +299,13 @@ def main(img1_path, img2_path, out_dir,
                 deleteList.append(files)
             if files[:3] == 'MAD':
                 deleteList.append(files)
-        f = open('filesInFolder.txt', 'w+')
-        for files in fileList:
-            f.write('%s\n' % files)
-        f.close()
-        f = open('deletedFiles.txt', 'w+')
-        for files in deleteList:
-            f.write('%s\n' % files)
-        f.close()
         for files in deleteList:
             os.remove(files)
-    if debug is not None:
-        f = open('DebugValue.txt', 'w+')
-        f.write(str(debug))
-        f.close()
     
     
-
     # write the status
     if input_data is not None:
         status = {'status': 'success', 'reason': 'task completed'}
-        with open('inputData.json', 'w') as outfile:
-            json.dump(input_data, outfile)
         with open('/mnt/work/status.json', 'w') as outfile:
             json.dump(status, outfile)
 
