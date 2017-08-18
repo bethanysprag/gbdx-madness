@@ -53,13 +53,21 @@ def cli(ctx):
         ports_json = '/mnt/work/input/ports.json'
 
         numcpus = multiprocessing.cpu_count()
+        try:
+            input_data = json.load(open(ports_json))
+            debug = str(input_data['debug'])
+            if debug == '':
+                debug = None
+        except:
+            debug = None
         main(get_inputs('/mnt/work/input/image1'),
              get_inputs('/mnt/work/input/image2'),
              '/mnt/work/output/data',
              json.load(open(ports_json)),
              xtiles=4,
              ytiles=4,
-             numcpus=numcpus)
+             numcpus=numcpus,
+             debug=debug)
 
     else:
         ctx.invoked_subcommand
@@ -190,10 +198,7 @@ def main(img1_path, img2_path, out_dir,
     del r1, r2
     logging.info("Clipping complete.")
 
-    #For DEBUG ONLY!!! Remove after debugging
-    contents = os.listdir(out_dir)
-    logging.info("Contents of out_dir: %s" % contents)
-    # we want to load the vrt and chop out tiles from it for each raster
+        # we want to load the vrt and chop out tiles from it for each raster
     # tile sizes are at most 5000 x 5000
     # 16 bit... 2 * 5000 * 5000 * 8 bands
     # seems reasonable
@@ -239,7 +244,7 @@ def main(img1_path, img2_path, out_dir,
 
     logging.info("Tiling comlete.")
 
-    logging.info("Finding MAD variates.")3f5d8dfb927822911ba6e889c7eb70a0840c6f07
+    logging.info("Finding MAD variates.")
     im_pairs = zip(im1_tiles, im2_tiles)
 
     mad_tiles = pmap(madly, im_pairs)
@@ -285,28 +290,19 @@ def main(img1_path, img2_path, out_dir,
     #DELETEME
     #If not debug, delete  intermediate files (vrts, MAD)
         #if we're in the outdir, I can just search for vrts and Mad and remove them, right?
-    if debug is not None:
+    if debug is None:
         fileList = []
         deleteList = []
-        for files in os.listdir(outdir):
+        for files in os.listdir(out_dir):
             fileList.append(files)
-            if files.endswith(vrt):
+            if files.endswith('vrt'):
                 deleteList.append(files)
-            if files[:3] = 'MAD':
+            if files[:3] == 'MAD':
                 deleteList.append(files)
-        f = open('filesInFolder.txt', 'r')
-        for files in fileList:
-            f.write('%s\n' % files)
-        f.close()
-        f = open('deletedFiles.txt', 'r')
-        for files in deleteList:
-            f.write('%s\n' % files)
-        f.close()
         for files in deleteList:
             os.remove(files)
     
     
-
     # write the status
     if input_data is not None:
         status = {'status': 'success', 'reason': 'task completed'}
