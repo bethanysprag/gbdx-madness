@@ -8,6 +8,12 @@ import multiprocessing
 
 import click
 import numpy as np
+try:
+    import gdal
+    import ogr
+
+except:
+    from osgeo import gdal, ogr
 
 from madness.split import splits
 from madness.raster import Raster
@@ -51,15 +57,28 @@ def cli(ctx):
         # load ports.json
         # currently not using
         ports_json = '/mnt/work/input/ports.json'
+        default_filter = 35
 
         numcpus = multiprocessing.cpu_count()
+        input_data = json.load(open(ports_json))
         try:
-            input_data = json.load(open(ports_json))
             debug = str(input_data['debug'])
             if debug == '':
                 debug = None
         except:
             debug = None
+        try:
+            polygons = str(input_data['Polygons'])
+            if polygons != 'yes':
+                polygons = None
+        except:
+            debug = None
+        if polygons is not None:
+            try:
+                filter_value = str(input_data['Polygon_Filter_Value'])
+                filter_value = int(filter_value)
+            except:
+                filter_value = default_filter
         main(get_inputs('/mnt/work/input/image1'),
              get_inputs('/mnt/work/input/image2'),
              '/mnt/work/output/data',
@@ -67,7 +86,9 @@ def cli(ctx):
              xtiles=4,
              ytiles=4,
              numcpus=numcpus,
-             debug=debug)
+             debug=debug,
+             polygons=polygons,
+             filter_value=filter_value)
 
     else:
         ctx.invoked_subcommand
@@ -114,8 +135,44 @@ def nongbdx(t0, t1, outdir, xtiles, ytiles, numcpus):
         raise ValueError("see: task.py nongbdx --help")
 
 
+def JSON2Polygons(JSON_File, Polygon_file=None, threshold=35, res=0.0001):
+    name = names(JSON_File)
+    tempRaster = '%s/TempRaster.tif' % name['directory']
+    if os.path.exists(tempRaster):
+        os.remove(tempRaster)
+    exeString = 'gdal_rasterize -burn 1 -where "count>%s" -of GTiff -tr %s %s -a_nodata 0 %s %s' % (threshold, 
+                                                                                                    res, 
+                                                                                                    res, 
+                                                                                                    JSON_File, 
+                                                                                                    tempRaster)
+    a = os.system(exeString)
+    if Polygon_file is None:
+        name = names(JSON_File)
+        Polygon_file = '%s/%s_Polygons.json' % (name['directory'], name['basename'])
+    exeString = 'gdal_polygonize.py -q -8 -f GeoJSON %s %s Layer Changed' % (tempRaster, 
+                                                                             Polygon_file)
+    b = os.system(exeString)
+    if a+b != 0:
+        return 'error'
+    os.remove(tempRaster)
+
+
+def names(path):
+    baseWExt = os.path.basename(path)
+    temp = baseWExt.split('.')
+    basename = temp[0]
+    if len(temp) == 2:
+        extension = temp[1]
+    else:
+        extension = ''
+    folder = os.path.dirname(path)
+    outName = {'basename': basename, 'extension': extension,
+               'directory': folder}
+    return outName
+
+
 def main(img1_path, img2_path, out_dir,
-         input_data, xtiles, ytiles, numcpus, debug=None):
+         input_data, xtiles, ytiles, numcpus, debug=None, filter_value=35, polygons=None):
 
     # make and change to output directory
     try:
@@ -301,8 +358,17 @@ def main(img1_path, img2_path, out_dir,
                 deleteList.append(files)
         for files in deleteList:
             os.remove(files)
+
     
-    
+    if polygons is not None:
+        jsonList = []
+        for files in os.listdir(out_dir):
+            if files.endswith('JSON'):
+                jsonList.append(files)
+        for outJSON in jsonList:
+            JSON2Polygons(outJSON, filter_value=filter_value)
+
+
     # write the status
     if input_data is not None:
         status = {'status': 'success', 'reason': 'task completed'}
