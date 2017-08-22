@@ -366,7 +366,7 @@ def main(img1_path, img2_path, out_dir,
             if files.endswith('JSON'):
                 jsonList.append(files)
         for outJSON in jsonList:
-            JSON2Polygons(outJSON, filter_value=filter_value)
+            JSON2Polygons(outJSON, threshold=filter_value)
 
 
     # write the status
