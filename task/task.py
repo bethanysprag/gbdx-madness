@@ -155,6 +155,7 @@ def JSON2Polygons(JSON_File, Polygon_file=None, threshold=35, res=0.0001):
     if a+b != 0:
         return 'error'
     os.remove(tempRaster)
+    return 0
 
 
 def names(path):
@@ -369,8 +370,10 @@ def main(img1_path, img2_path, out_dir,
             if files.endswith('JSON'):
                 jsonList.append(files)
         for outJSON in jsonList:
-            JSON2Polygons(outJSON, threshold=filter_value)
-
+            status = JSON2Polygons(outJSON, threshold=filter_value)
+            f = open('JSON2PolygonsStatus.txt', 'w')
+            f.write(str(status))
+            f.close()
 
     #DELETE FOR DEBUG ONLY
     with open('inputData.json', 'w') as outfile:
