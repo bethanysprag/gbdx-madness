@@ -359,7 +359,10 @@ def main(img1_path, img2_path, out_dir,
         for files in deleteList:
             os.remove(files)
 
-    
+
+    f = open('polygonsValue.txt', 'w+')
+    f.write(str(polygons))
+    f.close()
     if polygons is not None:
         jsonList = []
         for files in os.listdir(out_dir):
@@ -369,6 +372,11 @@ def main(img1_path, img2_path, out_dir,
             JSON2Polygons(outJSON, threshold=filter_value)
 
 
+    #DELETE FOR DEBUG ONLY
+    with open('inputData.json', 'w') as outfile:
+              json.dump(input_data, outfile)
+
+    
     # write the status
     if input_data is not None:
         status = {'status': 'success', 'reason': 'task completed'}
