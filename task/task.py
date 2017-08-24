@@ -137,7 +137,10 @@ def nongbdx(t0, t1, outdir, xtiles, ytiles, numcpus):
 
 def JSON2Polygons(JSON_File, Polygon_file=None, threshold=35, res=0.0001):
     name = names(JSON_File)
-    tempRaster = '%s/TempRaster.tif' % name['directory']
+    # This is a bad code practice, but I'm removing the directory from these outputs since we've already
+    # changed working directories to the output directory
+    #tempRaster = '%s/TempRaster.tif' % name['directory']
+    tempRaster = 'TempRaster.tif'
     if os.path.exists(tempRaster):
         os.remove(tempRaster)
     exeString = 'gdal_rasterize -burn 1 -where "count>%s" -of GTiff -tr %s %s -a_nodata 0 %s %s' % (threshold, 
@@ -148,7 +151,8 @@ def JSON2Polygons(JSON_File, Polygon_file=None, threshold=35, res=0.0001):
     a = os.system(exeString)
     if Polygon_file is None:
         name = names(JSON_File)
-        Polygon_file = '%s/%s_Polygons.json' % (name['directory'], name['basename'])
+        #Polygon_file = '%s/%s_Polygons.json' % (name['directory'], name['basename'])
+        Polygon_file = '%s_Polygons.json' % (name['basename'])
     exeString = 'gdal_polygonize.py -q -8 -f GeoJSON %s %s Layer Changed' % (tempRaster, 
                                                                              Polygon_file)
     b = os.system(exeString)
