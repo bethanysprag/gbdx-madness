@@ -57,7 +57,7 @@ def cli(ctx):
         # load ports.json
         # currently not using
         ports_json = '/mnt/work/input/ports.json'
-        default_filter = 35
+        default_filter = 30
 
         numcpus = multiprocessing.cpu_count()
         input_data = json.load(open(ports_json))
@@ -135,7 +135,7 @@ def nongbdx(t0, t1, outdir, xtiles, ytiles, numcpus):
         raise ValueError("see: task.py nongbdx --help")
 
 
-def JSON2Polygons(JSON_File, Polygon_file=None, threshold=35, res=0.0001):
+def JSON2Polygons(JSON_File, Polygon_file=None, threshold=30, res=0.0001):
     name = names(JSON_File)
     # This is a bad code practice, but I'm removing the directory from these outputs since we've already
     # changed working directories to the output directory
@@ -177,7 +177,7 @@ def names(path):
 
 
 def main(img1_path, img2_path, out_dir,
-         input_data, xtiles, ytiles, numcpus, debug=None, filter_value=35, polygons=None):
+         input_data, xtiles, ytiles, numcpus, debug=None, filter_value=30, polygons=None):
 
     # make and change to output directory
     try:
@@ -349,9 +349,7 @@ def main(img1_path, img2_path, out_dir,
         pool.close()
     
 
-    #DELETEME
     #If not debug, delete  intermediate files (vrts, MAD)
-        #if we're in the outdir, I can just search for vrts and Mad and remove them, right?
     if debug is None:
         fileList = []
         deleteList = []
@@ -365,9 +363,6 @@ def main(img1_path, img2_path, out_dir,
             os.remove(files)
 
 
-    f = open('polygonsValue.txt', 'w+')
-    f.write(str(polygons))
-    f.close()
     if polygons is not None:
         jsonList = []
         for files in os.listdir(out_dir):
@@ -375,13 +370,11 @@ def main(img1_path, img2_path, out_dir,
                 jsonList.append(files)
         for outJSON in jsonList:
             status = JSON2Polygons(outJSON, threshold=filter_value)
-            f = open('JSON2PolygonsStatus.txt', 'w')
-            f.write(str(status))
-            f.close()
+
 
     #DELETE FOR DEBUG ONLY
-    with open('inputData.json', 'w') as outfile:
-              json.dump(input_data, outfile)
+#    with open('inputData.json', 'w') as outfile:
+#              json.dump(input_data, outfile)
 
     
     # write the status
