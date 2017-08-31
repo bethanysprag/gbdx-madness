@@ -67,6 +67,7 @@ def cli(ctx):
                 debug = None
         except:
             debug = None
+        polygons = None
         try:
             polygons = str(input_data['Polygons'])
             if polygons != 'yes':
