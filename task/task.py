@@ -73,7 +73,7 @@ def cli(ctx):
             if polygons != 'yes':
                 polygons = None
         except:
-            debug = None
+            polygons = None
         if polygons is not None:
             try:
                 filter_value = str(input_data['Polygon_Filter_Value'])
