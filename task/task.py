@@ -58,6 +58,7 @@ def cli(ctx):
         # currently not using
         ports_json = '/mnt/work/input/ports.json'
         default_filter = 30
+        filter_value = default_filter
 
         numcpus = multiprocessing.cpu_count()
         input_data = json.load(open(ports_json))
