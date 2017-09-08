@@ -85,7 +85,7 @@ def cli(ctx):
 		if polygons is not None:
             try:
                 grid_size = str(input_data['Polygon_Grid_Size'])
-                grid_size = float(filter_value)
+                grid_size = float(grid_size)
             except:
                 grid_size = default_grid
         main(get_inputs('/mnt/work/input/image1'),
@@ -344,7 +344,7 @@ def main(img1_path, img2_path, out_dir,
 
     # also takes too long.
     # write the results to a json file.
-    logging.info("Aggrregating change to MGRS grid.")
+    logging.info("Aggregating change to MGRS grid.")
 
     # # MGRS aggregation precision
     from madness.utils import geojsonify
@@ -385,6 +385,7 @@ def main(img1_path, img2_path, out_dir,
 		if delEmpties == 1:
 		    logging.info("Checking polygons for null outputs.")
                     polygonList = []
+		    removalList = []
                     for files in os.listdir(out_dir):
                         polygonList.append(files)
                     if files.endswith('Polygons.json'):
@@ -397,14 +398,19 @@ def main(img1_path, img2_path, out_dir,
 		    	count = layer.GetFeatureCount()
 		    	layer = None
 		    	vs.Destroy()
-		    	if count == 0:
+		    	if count < 1:
+			    removalList.append(files)
 			    os.remove(files)
 			    logging.info("Removing empty polygon output: %s" % files)
+			f = open('EmptyPolygons.txt', 'w')
+                        for files in removalList:
+				f.write('%s/n' % files)
+			f.close()
 
 
     #DELETE FOR DEBUG ONLY
-#    with open('inputData.json', 'w') as outfile:
-#              json.dump(input_data, outfile)
+    with open('inputData.json', 'w') as outfile:
+              json.dump(input_data, outfile)
 
     
     # write the status
