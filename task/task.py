@@ -58,6 +58,7 @@ def cli(ctx):
         # currently not using
         ports_json = '/mnt/work/input/ports.json'
         default_filter = 30
+        filter_value = default_filter
 
         numcpus = multiprocessing.cpu_count()
         input_data = json.load(open(ports_json))
@@ -67,12 +68,13 @@ def cli(ctx):
                 debug = None
         except:
             debug = None
+        polygons = None
         try:
             polygons = str(input_data['Polygons'])
             if polygons != 'yes':
                 polygons = None
         except:
-            debug = None
+            polygons = None
         if polygons is not None:
             try:
                 filter_value = str(input_data['Polygon_Filter_Value'])
