@@ -398,8 +398,8 @@ def main(img1_path, img2_path, out_dir,
 		    	layer = None
 		    	vs.Destroy()
 		    	if count == 0:
-			        os.remove(files)
-				logging.info("Removing empty polygon output: %s" % files)
+			    os.remove(files)
+			    logging.info("Removing empty polygon output: %s" % files)
 
 
     #DELETE FOR DEBUG ONLY
