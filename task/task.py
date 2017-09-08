@@ -58,7 +58,7 @@ def cli(ctx):
         # currently not using
         ports_json = '/mnt/work/input/ports.json'
         default_filter = 30
-		default_grid = 0.0001
+	default_grid = 0.0001
         filter_value = default_filter
         grid_size = default_grid
         numcpus = multiprocessing.cpu_count()
@@ -98,7 +98,7 @@ def cli(ctx):
              debug=debug,
              polygons=polygons,
              filter_value=filter_value,
-			 grid_size=grid_size)
+	     grid_size=grid_size)
 
     else:
         ctx.invoked_subcommand
@@ -384,23 +384,22 @@ def main(img1_path, img2_path, out_dir,
             status = JSON2Polygons(outJSON, threshold=filter_value, grid_size=grid_size)
 		if delEmpties == 1:
 		    logging.info("Checking polygons for null outputs.")
-            fileList = []
-            polygonList = []
-            for files in os.listdir(out_dir):
-                fileList.append(files)
-                if files.endswith('Polygons.json'):
-                    polygonList.append(files)
-            for files in polygonList:
-		        if #json contains no features
-		    	driver = ogr.GetDriverByName('GeoJSON')
-                vs = driver.Open(files)
+                    polygonList = []
+                    for files in os.listdir(out_dir):
+                        polygonList.append(files)
+                    if files.endswith('Polygons.json'):
+                        polygonList.append(files)
+                    for files in polygonList:
+                        #if json contains no features
+		        driver = ogr.GetDriverByName('GeoJSON')
+                        vs = driver.Open(files)
 		    	layer = vs.GetLayer()
 		    	count = layer.GetFeatureCount()
 		    	layer = None
 		    	vs.Destroy()
 		    	if count == 0:
 			        os.remove(files)
-				    logging.info("Removing empty polygon output: %s" % files)
+				logging.info("Removing empty polygon output: %s" % files)
 
 
     #DELETE FOR DEBUG ONLY
