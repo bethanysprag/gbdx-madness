@@ -382,30 +382,31 @@ def main(img1_path, img2_path, out_dir,
                 jsonList.append(files)
         for outJSON in jsonList:
             status = JSON2Polygons(outJSON, threshold=filter_value, grid_size=grid_size)
-		if delEmpties == 1:
-		    logging.info("Checking polygons for null outputs.")
-                    polygonList = []
-		    removalList = []
-                    for files in os.listdir(out_dir):
-                        polygonList.append(files)
-                    if files.endswith('Polygons.json'):
-                        polygonList.append(files)
-                    for files in polygonList:
-                        #if json contains no features
-		        driver = ogr.GetDriverByName('GeoJSON')
-                        vs = driver.Open(files)
-		    	layer = vs.GetLayer()
-		    	count = layer.GetFeatureCount()
-		    	layer = None
-		    	vs.Destroy()
-		    	if count < 1:
-			    removalList.append(files)
-			    os.remove(files)
-			    logging.info("Removing empty polygon output: %s" % files)
-			f = open('EmptyPolygons.txt', 'w')
-                        for files in removalList:
-				f.write('%s/n' % files)
-			f.close()
+	    delEmpties = 1
+	    if delEmpties == 1:
+		logging.info("Checking polygons for null outputs.")
+                polygonList = []
+		removalList = []
+                for files in os.listdir(out_dir):
+                    polygonList.append(files)
+                if files.endswith('Polygons.json'):
+                    polygonList.append(files)
+                for files in polygonList:
+                    #if json contains no features
+		    driver = ogr.GetDriverByName('GeoJSON')
+                    vs = driver.Open(files)
+		    layer = vs.GetLayer()
+		    count = layer.GetFeatureCount()
+		    layer = None
+		    vs.Destroy()
+		    if count < 1:
+		        removalList.append(files)
+		        os.remove(files)
+		        logging.info("Removing empty polygon output: %s" % files)
+		    f = open('EmptyPolygons.txt', 'w')
+                    for files in removalList:
+		    f.write('%s/n' % files)
+		    f.close()
 
 
     #DELETE FOR DEBUG ONLY
