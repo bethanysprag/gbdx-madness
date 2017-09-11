@@ -376,7 +376,6 @@ def main(img1_path, img2_path, out_dir,
     if polygons is not None:
 	    logging.info("Writing polygons from rule images.")
         jsonList = []
-		delEmpties=1
         for files in os.listdir(out_dir):
             if files.endswith('JSON'):
                 jsonList.append(files)
