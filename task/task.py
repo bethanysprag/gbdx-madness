@@ -401,15 +401,15 @@ def main(img1_path, img2_path, out_dir,
 		        removalList.append(files)
 		        os.remove(files)
 		        logging.info("Removing empty polygon output: %s" % files)
-		    f = open('EmptyPolygons.txt', 'w')
-                    for files in removalList:
-		        f.write('%s/n' % files)
-		    f.close()
+#		    f = open('EmptyPolygons.txt', 'w')
+#                    for files in removalList:
+#		        f.write('%s/n' % files)
+#		    f.close()
 
 
     #DELETE FOR DEBUG ONLY
-    with open('inputData.json', 'w') as outfile:
-              json.dump(input_data, outfile)
+#    with open('inputData.json', 'w') as outfile:
+#              json.dump(input_data, outfile)
 
 
     # write the status
