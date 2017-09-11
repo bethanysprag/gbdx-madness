@@ -58,8 +58,9 @@ def cli(ctx):
         # currently not using
         ports_json = '/mnt/work/input/ports.json'
         default_filter = 30
+	default_grid = 0.0001
         filter_value = default_filter
-
+        grid_size = default_grid
         numcpus = multiprocessing.cpu_count()
         input_data = json.load(open(ports_json))
         try:
@@ -81,6 +82,12 @@ def cli(ctx):
                 filter_value = int(filter_value)
             except:
                 filter_value = default_filter
+	if polygons is not None:
+            try:
+                grid_size = str(input_data['Polygon_Grid_Size'])
+                grid_size = float(grid_size)
+            except:
+                grid_size = default_grid
         main(get_inputs('/mnt/work/input/image1'),
              get_inputs('/mnt/work/input/image2'),
              '/mnt/work/output/data',
@@ -90,7 +97,8 @@ def cli(ctx):
              numcpus=numcpus,
              debug=debug,
              polygons=polygons,
-             filter_value=filter_value)
+             filter_value=filter_value,
+	     grid_size=grid_size)
 
     else:
         ctx.invoked_subcommand
@@ -137,7 +145,7 @@ def nongbdx(t0, t1, outdir, xtiles, ytiles, numcpus):
         raise ValueError("see: task.py nongbdx --help")
 
 
-def JSON2Polygons(JSON_File, Polygon_file=None, threshold=30, res=0.0001):
+def JSON2Polygons(JSON_File, Polygon_file=None, threshold=30, grid_size=0.0001):
     name = names(JSON_File)
     # This is a bad code practice, but I'm removing the directory from these outputs since we've already
     # changed working directories to the output directory
@@ -146,8 +154,8 @@ def JSON2Polygons(JSON_File, Polygon_file=None, threshold=30, res=0.0001):
     if os.path.exists(tempRaster):
         os.remove(tempRaster)
     exeString = 'gdal_rasterize -burn 1 -where "count>%s" -of GTiff -tr %s %s -a_nodata 0 %s %s' % (threshold, 
-                                                                                                    res, 
-                                                                                                    res, 
+                                                                                                    grid_size, 
+                                                                                                    grid_size, 
                                                                                                     JSON_File, 
                                                                                                     tempRaster)
     a = os.system(exeString)
@@ -179,7 +187,7 @@ def names(path):
 
 
 def main(img1_path, img2_path, out_dir,
-         input_data, xtiles, ytiles, numcpus, debug=None, filter_value=30, polygons=None):
+         input_data, xtiles, ytiles, numcpus, debug=None, filter_value=30, polygons=None, grid_size=0.0001):
 
     # make and change to output directory
     try:
@@ -336,7 +344,7 @@ def main(img1_path, img2_path, out_dir,
 
     # also takes too long.
     # write the results to a json file.
-    logging.info("Aggrregating change to MGRS grid.")
+    logging.info("Aggregating change to MGRS grid.")
 
     # # MGRS aggregation precision
     from madness.utils import geojsonify
@@ -349,7 +357,7 @@ def main(img1_path, img2_path, out_dir,
     # # close all these things
     if numcpus != 1:
         pool.close()
-    
+
 
     #If not debug, delete  intermediate files (vrts, MAD)
     if debug is None:
@@ -366,19 +374,44 @@ def main(img1_path, img2_path, out_dir,
 
 
     if polygons is not None:
+	logging.info("Writing polygons from rule images.")
         jsonList = []
         for files in os.listdir(out_dir):
             if files.endswith('JSON'):
                 jsonList.append(files)
         for outJSON in jsonList:
-            status = JSON2Polygons(outJSON, threshold=filter_value)
+            status = JSON2Polygons(outJSON, threshold=filter_value, grid_size=grid_size)
+	    delEmpties = 1
+	    if delEmpties == 1:
+		logging.info("Checking polygons for null outputs.")
+                polygonList = []
+		removalList = []
+                for files in os.listdir(out_dir):
+                    if files.endswith('Polygons.json'):
+                        polygonList.append(files)
+                for files in polygonList:
+                    #if json contains no features
+		    driver = ogr.GetDriverByName('GeoJSON')
+                    vs = driver.Open(files)
+		    layer = vs.GetLayer()
+		    count = layer.GetFeatureCount()
+		    layer = None
+		    vs.Destroy()
+		    if count < 1:
+		        removalList.append(files)
+		        os.remove(files)
+		        logging.info("Removing empty polygon output: %s" % files)
+#		    f = open('EmptyPolygons.txt', 'w')
+#                    for files in removalList:
+#		        f.write('%s/n' % files)
+#		    f.close()
 
 
     #DELETE FOR DEBUG ONLY
 #    with open('inputData.json', 'w') as outfile:
 #              json.dump(input_data, outfile)
 
-    
+
     # write the status
     if input_data is not None:
         status = {'status': 'success', 'reason': 'task completed'}
