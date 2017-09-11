@@ -82,7 +82,7 @@ def cli(ctx):
                 filter_value = int(filter_value)
             except:
                 filter_value = default_filter
-		if polygons is not None:
+	if polygons is not None:
             try:
                 grid_size = str(input_data['Polygon_Grid_Size'])
                 grid_size = float(grid_size)
@@ -357,7 +357,7 @@ def main(img1_path, img2_path, out_dir,
     # # close all these things
     if numcpus != 1:
         pool.close()
-    
+
 
     #If not debug, delete  intermediate files (vrts, MAD)
     if debug is None:
@@ -388,8 +388,7 @@ def main(img1_path, img2_path, out_dir,
                 polygonList = []
 		removalList = []
                 for files in os.listdir(out_dir):
-                    polygonList.append(files)
-                if files.endswith('Polygons.json'):
+                    if files.endswith('Polygons.json'):
                     polygonList.append(files)
                 for files in polygonList:
                     #if json contains no features
@@ -413,7 +412,7 @@ def main(img1_path, img2_path, out_dir,
     with open('inputData.json', 'w') as outfile:
               json.dump(input_data, outfile)
 
-    
+
     # write the status
     if input_data is not None:
         status = {'status': 'success', 'reason': 'task completed'}
