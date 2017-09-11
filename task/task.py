@@ -374,7 +374,7 @@ def main(img1_path, img2_path, out_dir,
 
 
     if polygons is not None:
-	    logging.info("Writing polygons from rule images.")
+	logging.info("Writing polygons from rule images.")
         jsonList = []
         for files in os.listdir(out_dir):
             if files.endswith('JSON'):
@@ -388,7 +388,7 @@ def main(img1_path, img2_path, out_dir,
 		removalList = []
                 for files in os.listdir(out_dir):
                     if files.endswith('Polygons.json'):
-                    polygonList.append(files)
+                        polygonList.append(files)
                 for files in polygonList:
                     #if json contains no features
 		    driver = ogr.GetDriverByName('GeoJSON')
@@ -403,7 +403,7 @@ def main(img1_path, img2_path, out_dir,
 		        logging.info("Removing empty polygon output: %s" % files)
 		    f = open('EmptyPolygons.txt', 'w')
                     for files in removalList:
-		    f.write('%s/n' % files)
+		        f.write('%s/n' % files)
 		    f.close()
 
 
