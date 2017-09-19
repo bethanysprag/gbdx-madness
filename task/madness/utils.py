@@ -106,6 +106,7 @@ def cluster(in_raster, maxPercentage=0.2, maxTrys=5):
         # A large change class indicates the algorithm probably detected class
         #    differences rather than change vs nochange
         num_nonzero = np.count_nonzero(out)
+        repeat = 0
         if num_nonzero > maxPercentage * num_elements:
             repeat = 1
             count = 1
