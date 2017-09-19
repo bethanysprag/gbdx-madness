@@ -80,7 +80,7 @@ def polygonize(in_raster):
     return out_polygons
 
 
-def cluster(in_raster):
+def cluster(in_raster, maxPercentage=0.2, maxTrys=5):
     try:
         ds = Raster.fromFile(in_raster)
         x, y, z = ds.array.shape
@@ -101,6 +101,41 @@ def cluster(in_raster):
         if num_zeros < num_nonzero:
             # this means change has been assigned to zero
             out = 1 - out
+
+        # Check size of change class to make sure its not too large
+        # A large change class indicates the algorithm probably detected class
+        #    differences rather than change vs nochange
+        num_nonzero = np.count_nonzero(out)
+        if num_nonzero > maxPercentage * num_elements:
+            repeat = 1
+            count = 1
+        while repeat == 1:
+            mask = out * 1
+            maskData = np.reshape(mask,(x*y, 1))
+            newMask = np.where(maskData == 0)
+            data2 = X[np.where(maskData == 0)]
+            dim = data2.shape[0]
+            temp = np.zeros([dim,z])
+            for i in range(newMask[0].shape[0]):
+                temp[i,:] = X[newMask[0][i],:]
+            gmm = GaussianMixture(n_components=2).fit(temp)
+            out = gmm.predict(X)   
+            out = np.reshape(out,(x,y)).astype('uint8')
+            num_nonzero = np.count_nonzero(out)
+            num_elements = np.product(out.shape)
+            num_zeros = num_elements - num_nonzero
+            if num_zeros < num_nonzero:
+                # this means change has been assigned to zero
+                out = 1 - out
+            out[np.where(mask == 0)] = 0
+            num_nonzero = np.count_nonzero(out)
+            if num_nonzero <= maxPercentage * num_elements:
+                repeat = 0
+            if count >= maxTrys:
+                repeat = 0
+            count = count + 1
+
+
 
         # collect data to write file
         width, height = ds.gt[1], ds.gt[5]
