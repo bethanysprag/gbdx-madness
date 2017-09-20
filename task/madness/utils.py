@@ -136,6 +136,9 @@ def cluster(in_raster, maxPercentage=0.2, maxTrys=5):
                 repeat = 0
             count = count + 1
 
+        if num_nonzero == 0:
+            return None
+
 
 
         # collect data to write file
