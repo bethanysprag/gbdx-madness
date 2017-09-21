@@ -347,19 +347,6 @@ def main(img1_path, img2_path, out_dir,
     logging.info("Aggregating change to MGRS grid.")
 
 
-    #Ending the process early so that I can get the intermediate results
-    #    in order to find out why previous update is not compatible with 
-    #    geojsonify step
-    # write the status
-    #if input_data is not None:
-    #    status = {'status': 'success', 'reason': 'task completed'}
-    #    with open('/mnt/work/status.json', 'w') as outfile:
-    #        json.dump(status, outfile)
-
-    #logging.info("Done.")
-    #return
-
-
     # # MGRS aggregation precision
     from madness.utils import geojsonify
     from functools import partial
