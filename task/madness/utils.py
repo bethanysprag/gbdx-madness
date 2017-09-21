@@ -31,43 +31,46 @@ def pixelcoord(col, row, gt):
 
 
 def geojsonify(binary_image, precision):
-    ds = Raster.fromFile(binary_image)
-
-    # make sure it's wgs84
-    # and reload
-    if ds.epsg != 4326:
-        cmd = ("gdalwarp -t_srs EPSG:4326 %s %s" %
-               (binary_image, 'WGS84_' + binary_image))
-        wrap_subprocess(cmd)
-
-        binary_image = 'WGS84_' + binary_image
+    try:
         ds = Raster.fromFile(binary_image)
 
-    # collect some useful values
-    gt = ds.gt
-    m = mgrs.MGRS()
-    ys, xs, _ = ds.array.nonzero()
+        # make sure it's wgs84
+        # and reload
+        if ds.epsg != 4326:
+            cmd = ("gdalwarp -t_srs EPSG:4326 %s %s" %
+                   (binary_image, 'WGS84_' + binary_image))
+            wrap_subprocess(cmd)
 
-    _pc = partial(pixelcoord, gt=gt)
-    pc = np.vectorize(_pc)
-    new_xs, new_ys = pc(xs, ys)
+            binary_image = 'WGS84_' + binary_image
+            ds = Raster.fromFile(binary_image)
 
-    mgr = np.vectorize(partial(m.toMGRS, MGRSPrecision=precision))
-    mgrs_codes = mgr(new_ys, new_xs)
-    codes, counts = np.unique(mgrs_codes, return_counts=True)
+        # collect some useful values
+        gt = ds.gt
+        m = mgrs.MGRS()
+        ys, xs, _ = ds.array.nonzero()
 
-    latlons = (m.toLatLon(code) for code in codes)
-    out = FeatureCollection([Feature(
-        id=i,
-        geometry=Point((ll[1], ll[0])),
-        properties={"count": c, "mgrs": mg}) for i, ll, c, mg
-        in izip(xrange(len(counts)), latlons, counts, codes)])
+        _pc = partial(pixelcoord, gt=gt)
+        pc = np.vectorize(_pc)
+        new_xs, new_ys = pc(xs, ys)
 
-    out_name = binary_image[:-4] + '.JSON'
-    with open(out_name, 'w') as outfile:
-        geojson.dump(out, outfile)
+        mgr = np.vectorize(partial(m.toMGRS, MGRSPrecision=precision))
+        mgrs_codes = mgr(new_ys, new_xs)
+        codes, counts = np.unique(mgrs_codes, return_counts=True)
 
-    return True
+        latlons = (m.toLatLon(code) for code in codes)
+        out = FeatureCollection([Feature(
+            id=i,
+            geometry=Point((ll[1], ll[0])),
+            properties={"count": c, "mgrs": mg}) for i, ll, c, mg
+            in izip(xrange(len(counts)), latlons, counts, codes)])
+
+        out_name = binary_image[:-4] + '.JSON'
+        with open(out_name, 'w') as outfile:
+            geojson.dump(out, outfile)
+
+        return True
+    except:
+        return False
 
 
 def polygonize(in_raster):

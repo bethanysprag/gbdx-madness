@@ -351,13 +351,13 @@ def main(img1_path, img2_path, out_dir,
     #    in order to find out why previous update is not compatible with 
     #    geojsonify step
     # write the status
-    if input_data is not None:
-        status = {'status': 'success', 'reason': 'task completed'}
-        with open('/mnt/work/status.json', 'w') as outfile:
-            json.dump(status, outfile)
+    #if input_data is not None:
+    #    status = {'status': 'success', 'reason': 'task completed'}
+    #    with open('/mnt/work/status.json', 'w') as outfile:
+    #        json.dump(status, outfile)
 
-    logging.info("Done.")
-    return
+    #logging.info("Done.")
+    #return
 
 
     # # MGRS aggregation precision
