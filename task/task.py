@@ -57,7 +57,7 @@ def cli(ctx):
         # load ports.json
         # currently not using
         ports_json = '/mnt/work/input/ports.json'
-        default_filter = 30
+        default_filter = 20
 	default_grid = 0.0001
         filter_value = default_filter
         grid_size = default_grid
@@ -187,7 +187,7 @@ def names(path):
 
 
 def main(img1_path, img2_path, out_dir,
-         input_data, xtiles, ytiles, numcpus, debug=None, filter_value=30, polygons=None, grid_size=0.0001):
+         input_data, xtiles, ytiles, numcpus, debug=None, filter_value=20, polygons=None, grid_size=0.0001):
 
     # make and change to output directory
     try:
