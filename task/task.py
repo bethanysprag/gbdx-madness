@@ -141,7 +141,7 @@ def nongbdx(t0, t1, outdir, xtiles, ytiles, numcpus, debug='yes'):
              xtiles,
              ytiles,
              numcpus,
-	     debug=debug)
+	     debug='yes')
     else:
         raise ValueError("see: task.py nongbdx --help")
 
