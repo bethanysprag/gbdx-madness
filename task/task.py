@@ -128,7 +128,7 @@ def cli(ctx):
 @click.option('--debug',
               default=None,
               help='Leaves temp files in place for debugging')
-def nongbdx(t0, t1, outdir, xtiles, ytiles, numcpus):
+def nongbdx(t0, t1, outdir, xtiles, ytiles, numcpus, debug='yes'):
     """
     To aid in running this as a command line docker application,
     we look for the inputs as enviromental vars.
@@ -140,7 +140,8 @@ def nongbdx(t0, t1, outdir, xtiles, ytiles, numcpus):
              None,
              xtiles,
              ytiles,
-             numcpus)
+             numcpus,
+	     debug=debug)
     else:
         raise ValueError("see: task.py nongbdx --help")
 
