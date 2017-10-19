@@ -15,9 +15,9 @@ Mandala is a fully automated change detection system with incredible speed, flex
 
 ## Running Mandala directly from docker container
 
-This version of Mandala Change Detection is designed to be run from Digital Globe's GBDX platform, or in desktop mode calling the docker image directly.  The most current docker image can always be pulled from the Dockerhub repository barnabassprague/gbdx-madness:latest.  This repo is currently private, so Exogenesis partners wanting access need to submit a dockerhub username to Barnabas@exogenesis.earth to be added as a contributor:
+This version of Mandala Change Detection is designed to be run from Digital Globe's GBDX platform, or in desktop mode calling the docker image directly.  The most current docker image can always be pulled from the Dockerhub repository barnabassprague/gbdx-madness:latest.  This repo is currently private, so Exogenesis partners wanting access need to submit a dockerhub username to Barnabas@exogenesis.earth to be added as a collaborator:
 
-To run the registered docker image, first login to Dockhub in the cli using credentials that have been added to the repo as a contributor.
+To run the registered docker image, first login to Dockhub in the cli using credentials that have been added to the repo as a collaborator.
 ```
 docker login --username <User> --password <Password>
 ```
@@ -43,9 +43,9 @@ Required arguments:
 
 Optional arguments:
   --outdir              The output directory (REQU
-  --xiles
+  --xtiles
                         Number of x tiles to subset input image into (default: 1)
-  --tiles
+  --ytiles
                         Number of y tiles to subset input image into (default: 1)
   --numcpus       	Number of cpus to use. Only works if numtiles > 1 (default: 1)
 
