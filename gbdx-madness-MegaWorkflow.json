@@ -132,7 +132,19 @@
                 },
                 {
                     "name": "destination",
-                    "value": "s3://gbd-customer-data/654e4f06-d9aa-4383-820e-5b207ac78d5d/Mandala_10100100104A0800_10400100048FA500"
+                    "value": "s3://gbd-customer-data/654e4f06-d9aa-4383-820e-5b207ac78d5d/Mandala_Demo"
+                },
+                {
+                    "name": "access_key_id",
+                    "value": "$ACCESS_KEY_ID"
+                },
+                {
+                    "name": "session_token",
+                    "value": "$SESSION_TOKEN"
+                },
+                {
+                    "name": "secret_key",
+                    "value": "$SECRET_KEY"
                 }
             ],
             "taskType": "StageDataToS3",
